@@ -11,7 +11,7 @@ mongoose.connect(mongodb, {useNewUrlParser: true, useUnifiedTopology: true});
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error: '));
 
-const PREFIX = config.prefix;
+const PREFIX = ">>";
 
 const client = new Discord.Client();
 client.commands = new Discord.Collection();
