@@ -1,12 +1,12 @@
 {
-  "name": "NoodohBot",
+  "name": "QuoteBot",
   "version": "1.0.0",
   "description": "",
-  "main": "noodohBot.js",
+  "main": "quoteBot.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node noodohBot.js",
-    "devstart": "nodemon noodohBot.js"
+    "start": "node quoteBot.js",
+    "devstart": "nodemon quoteBot.js"
   },
   "keywords": [],
   "author": "",

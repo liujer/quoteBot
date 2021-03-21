@@ -8,7 +8,7 @@ module.exports = {
             quotesChannelID: message.channel.id,
         });
 
-        ServerInfo.findOne({}, (err, info) => {
+        await ServerInfo.findOne({}, (err, info) => {
             if (err) {
                 console.log(err.toString());
                 return;
@@ -20,11 +20,6 @@ module.exports = {
                 newInfo.save();
             }
         });
-        await ServerInfo.findOne({}, (err, info) => {
-            if(err) return;
-            console.log(info.quotesChannelID);
-        });
-        console.log(message.channel.id);
         message.channel.send('Quotes channel set!');
     }
 }

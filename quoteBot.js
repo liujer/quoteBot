@@ -43,20 +43,22 @@ client.on('message', message => {
 			//message.channel.send('Invalid command');
 			console.log(error.toString());
 		}
-	}
-	var channelID = "";
-	async.series([
-		function(callback) {
-			ServerInfo.findOne({}, (err, data) => {
-				channelID = data.quotesChannelID;
+	} else {
+		var channelID = "";
+		async.series([
+			function(callback) {
+				ServerInfo.findOne({}, (err, data) => {
+					channelID = data.quotesChannelID;
+					callback();
+				});
+			},
+			function(callback) {
+				if (channelID === message.channel.id) {
+					client.commands.get("addquote").execute(message);
+				} 
 				callback();
-			});
-		},
-		function(callback) {
-			if (channelID === message.channel.id) {
-				client.commands.get("addquote").execute(message);
-			} 
-			callback();
-		}
-	]);
+			}
+		]);
+	}
+	
 })
