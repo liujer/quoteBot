@@ -5,16 +5,19 @@ const async = require('async');
 
 var ServerInfo = require('./models/serverInfo');
 
+// Connect to mongoDB
 var mongoose = require('mongoose');
 var mongodb = config.mongoDBkey;
 mongoose.connect(mongodb, {useNewUrlParser: true, useUnifiedTopology: true});
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error: '));
 
-const PREFIX = ">>";
+const PREFIX = ">>"; // Prefix for discord commands
 
 const client = new Discord.Client();
 client.commands = new Discord.Collection();
+
+// Process all commands into one array
 
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
 
@@ -33,6 +36,7 @@ client.on('message', message => {
 	if(message.author.bot) {
 		return;
 	}
+	// Process command based on prefix
 	if (message.content.substring(0, PREFIX.length) == PREFIX) {
 		const args = message.content.slice(PREFIX.length).trim().split(/ +/);
 		const command = args.shift().toLowerCase();
@@ -40,10 +44,9 @@ client.on('message', message => {
 		try {
 			client.commands.get(command).execute(message, args);
 		} catch (error) {
-			//message.channel.send('Invalid command');
 			console.log(error.toString());
 		}
-	} else {
+	} else { // Store quote if said in assigned channel
 		var channelID = "";
 		async.series([
 			function(callback) {

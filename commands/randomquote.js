@@ -1,0 +1,42 @@
+var Quote = require("../models/quote");
+
+getRandomQuote = async function(count, author, message) {
+    var random = Math.floor(Math.random() * count);
+    await Quote.findOne({speaker: author}).skip(random).exec(
+        function(err, result) {
+            if (err) {
+                console.log(err);
+                return;
+            }
+            message.channel.send(result["quote"] + " - " + result["speaker"]
+                + "\n" + result["dateEntered"]);
+        }
+    );
+};
+
+module.exports = {
+    name: "randomquote",
+    description: "Gets a random quote based on name",
+    async execute(message, args) {
+        if(args.length > 1) {
+            message.channel.send("Invalid number of parameters.");
+        } else if (args.length == 0) {
+            message.channel.send("No author given.");
+        } else {
+            const author = args[0];
+            Quote.find({speaker:author}).countDocuments().exec(
+                async function(err, count) {
+                if (err) {
+                    console.log(err);
+                    return;
+                }
+                if (count == 0) {
+                    message.channel.send(author + " has not said any quotes.");
+                } else {
+                    await getRandomQuote(count, author, message);
+                }   
+            });
+
+        }
+    }
+}
