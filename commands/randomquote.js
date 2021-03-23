@@ -2,7 +2,8 @@ var Quote = require("../models/quote");
 
 getRandomQuote = async function(count, author, message) {
     var random = Math.floor(Math.random() * count);
-    await Quote.findOne({speaker: author}).skip(random).exec(
+    var params = (author == undefined) ? undefined : {speaker: author};
+    await Quote.findOne(params).skip(random).exec(
         function(err, result) {
             if (err) {
                 console.log(err);
@@ -20,11 +21,10 @@ module.exports = {
     async execute(message, args) {
         if(args.length > 1) {
             message.channel.send("Invalid number of parameters.");
-        } else if (args.length == 0) {
-            message.channel.send("No author given.");
         } else {
-            const author = args[0];
-            Quote.find({speaker:author}).countDocuments().exec(
+            const author = (args.length == 0) ? undefined : args[0];
+            const params = (args.length == 0) ? undefined : {speaker: author};
+            Quote.find(params).countDocuments().exec(
                 async function(err, count) {
                 if (err) {
                     console.log(err);
