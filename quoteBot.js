@@ -38,7 +38,7 @@ client.on('message', message => {
 	}
 	// Process command based on prefix
 	if (message.content.substring(0, PREFIX.length) == PREFIX) {
-		const args = message.content.slice(PREFIX.length).trim().split(/ +/);
+		const args = message.content.slice(PREFIX.length).trim().split(/\s+/);
 		const command = args.shift().toLowerCase();
 		try {
 			client.commands.get(command).execute(message, args);

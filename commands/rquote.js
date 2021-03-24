@@ -3,6 +3,7 @@ var Quote = require("../models/quote");
 getRandomQuote = async function(count, author, message) {
     var random = Math.floor(Math.random() * count);
     var params = (author == undefined) ? undefined : {speaker: author};
+
     await Quote.findOne(params).skip(random).exec(
         function(err, result) {
             if (err) {
@@ -19,24 +20,25 @@ module.exports = {
     name: "rquote",
     description: "Gets a random quote based on name",
     async execute(message, args) {
-        if(args.length > 1) {
-            message.channel.send("Invalid number of parameters.");
-        } else {
-            const author = (args.length == 0) ? undefined : args[0];
-            const params = (args.length == 0) ? undefined : {speaker: author};
-            Quote.find(params).countDocuments().exec(
-                async function(err, count) {
-                if (err) {
-                    console.log(err);
-                    return;
-                }
-                if (count == 0) {
-                    message.channel.send(author + " has not said any quotes.");
-                } else {
-                    await getRandomQuote(count, author, message);
-                }   
-            });
 
-        }
+
+        const author = (args.length == 0) ? undefined : args.join(" ");
+        const params = (args.length == 0) ? undefined : {speaker: author};
+        Quote.find(params).countDocuments().exec(
+            async function(err, count) {
+            if (err) {
+                console.log(err);
+                return;
+            }
+            if (count == 0) {
+                if (params == undefined && author == undefined) {
+                    message.channel.send("No quotes have been recorded yet for anyone.");
+                } else {
+                    message.channel.send(author + " has not said any quotes.");
+                }      
+            } else {
+                await getRandomQuote(count, author, message);
+            }   
+        });
     }
 }

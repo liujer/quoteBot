@@ -1,6 +1,6 @@
 var Quote = require('../models/quote');
 var moment = require('moment');
-const quoteFormat = /"(.)*"(\s)*-(\s)(.)*/; // Matches "<quote>" - <author>
+const quoteFormat = /"(.)*"(\s)*-(\s)*(.)*/; // Matches "<quote>" - <author>
 
 module.exports = {
 	name: 'addquote',
@@ -13,7 +13,7 @@ module.exports = {
 				quote = quote.substring(1, quote.length - 1);
 			}
 
-			var temp = fullQuote[1].trim();
+			var temp = fullQuote[1].trim().split(/\s+/).join(" ");
 			var speaker = (temp == "") ? "unknown" : temp;
 
 			var quoteModel = new Quote({
