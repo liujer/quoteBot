@@ -16,7 +16,7 @@ getRandomQuote = async function(count, author, message) {
 };
 
 module.exports = {
-    name: "randomquote",
+    name: "rquote",
     description: "Gets a random quote based on name",
     async execute(message, args) {
         if(args.length > 1) {
