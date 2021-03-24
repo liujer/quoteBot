@@ -40,7 +40,6 @@ client.on('message', message => {
 	if (message.content.substring(0, PREFIX.length) == PREFIX) {
 		const args = message.content.slice(PREFIX.length).trim().split(/ +/);
 		const command = args.shift().toLowerCase();
-	
 		try {
 			client.commands.get(command).execute(message, args);
 		} catch (error) {
