@@ -14,12 +14,11 @@ module.exports = {
 			var speaker = (temp == "") ? "unknown" : temp; // Format author in case excess whitespace
 
 			var time = moment(message.createdAt).format('MMM Do YY, h:mm a');
-
 			var count = await Quote.find({ 
 				speaker: speaker, 
 				quote: quote, 
 				dateEntered: time
-			}).count();
+			}).countDocuments();
 			if (count == 0) {
 				var quoteModel = new Quote({
 					speaker: speaker,
@@ -27,10 +26,11 @@ module.exports = {
 					dateEntered: time
 				}); 
 				quoteModel.save();
+				
 			}
-			
+			return true;
 		}
-		
-
+		return false;
+	
 	},
 };

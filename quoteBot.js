@@ -3,6 +3,7 @@ const Discord = require('discord.js');
 const config = require('./config.json');
 const async = require('async');
 
+
 var ServerInfo = require('./models/serverInfo');
 
 // Connect to mongoDB
