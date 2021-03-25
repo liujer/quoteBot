@@ -47,21 +47,7 @@ client.on('message', message => {
 			console.log(error.toString());
 		}
 	} else { // Store quote if said in assigned channel
-		var channelID = "";
-		async.series([
-			function(callback) {
-				ServerInfo.findOne({}, (err, data) => {
-					channelID = data.quotesChannelID;
-					callback();
-				});
-			},
-			function(callback) {
-				if (channelID === message.channel.id) {
-					client.commands.get("addquote").execute(message);
-				} 
-				callback();
-			}
-		]);
+		client.commands.get("addquote").execute(message);
 	}
 	
 })
