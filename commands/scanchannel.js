@@ -1,7 +1,26 @@
 var addQuote = require("../commands/addquote");
+// Reactions for bot asking permission to scan channel
 const yes = '✅';
 const no = '❌';
 
+/*
+    Pluralizes given message.
+    
+    Returns the message pluralized if the value given is not equal to 1
+*/
+getPlural = (message, value) => {
+    return (value == 1) ? message + '' : message + 's';
+}
+
+/*
+    Searches messages in message channel based on given options
+    to find quotes in the quote format
+
+    Returns a Promise with associative array with following values
+    totalCount - total amount of messages processed (max 100)
+    quoteCount - total amount of quotes found when fetching
+    lastID - last ID of user found in messages fetched
+*/
 fetchMessages = (message, options) => {
     return new Promise((resolve, reject) => {
         message.channel.messages.fetch(options)
@@ -21,22 +40,32 @@ fetchMessages = (message, options) => {
                 totalCount++;
             });
             Promise.all(result).then(() => {
-                resolve([totalCount, quoteCount, messages.last().id]);
+                resolve({
+                    totalCount : totalCount,
+                    quoteCount: quoteCount, 
+                    lastID : messages.last().id
+                });
             });
         });
     })
     
 } 
 
+/*
+    Processes a given limit of messages in a channel given by the message.
+    After executing, sends a message detailing total quotes found and 
+    total messages processed 
+*/
 processChannel = async (message, limit) => {
     const options = {limit: 100};
     if (limit === undefined) {
         await fetchMessages(message, options)
             .then((args) => {
-                const numProcessed = args[0];
-                const quoteCount = args[1];
-                message.channel.send("Processed " + numProcessed + " messages and found " 
-                    + quoteCount + " quotes");
+                const numProcessed = args['totalCount'];
+                const quoteCount = args['quoteCount'];
+                const stats = getPlural("Processed " + numProcessed + " message", 
+                    numProcessed) + getPlural(" and found " + quoteCount + " quote", quoteCount) + '.';
+                message.channel.send(stats);
             })
     } else {
         let numProcessed = 0;
@@ -46,11 +75,14 @@ processChannel = async (message, limit) => {
             if (lastID) {
                 options.before = lastID;
             }
+            if (limit < 100) {
+                options.limit = limit;
+            }
             const cont = await fetchMessages(message, options)
                 .then(results => { 
-                    const tempProcessed = results[0];
-                    const tempQuotesAdded = results[1];
-                    const tempID = results[2];
+                    const tempProcessed = results['totalCount'];
+                    const tempQuotesAdded = results['quoteCount'];
+                    const tempID = results['lastID'];
                     numProcessed += tempProcessed;
                     quotesAdded += tempQuotesAdded;
                     lastID = tempID;
@@ -60,16 +92,18 @@ processChannel = async (message, limit) => {
                 break;
             }
         }
-        message.channel.send("Processed " + numProcessed + " messages and found " + quotesAdded + " quotes");
+        const stats = getPlural("Processed " + numProcessed + " message", 
+            numProcessed) + getPlural(" and found " + quotesAdded + " quote", quotesAdded)+ '.';
+        message.channel.send(stats);
     }
 
 
 }
 
 // Sends a message to channel asking if user would like to process channel
-// callback: executes if user reacts with ✅ 
+// If proceeded, process channel given a limit on amount of messages to process
 continueProcessing = (message, limit) => {
-    message.channel.send("Are you sure? This will process " + limit + " messages.")
+    message.channel.send(getPlural("Are you sure? This will process " + limit + " message", limit) + '.')
     .then(async function(message) {
         await message.react(yes);
         await message.react(no);
@@ -99,14 +133,14 @@ module.exports = {
     description: "Processes messages in a channel to add them to quote database",
     async execute(message, args) {
         if (isNaN(args[0])) {
+            await continueProcessing(message);
+        } else {
+            const limit = args[0];
             if (args[0] <= 0) {
                 message.channel.send("Invalid number of messages to scan.");
             } else {
-                await continueProcessing(message);
-            }
-        } else {
-            const limit = args[0];
-            await continueProcessing(message, limit);
+                await continueProcessing(message, limit);
+            }  
         }
         
     }

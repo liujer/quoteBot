@@ -1,5 +1,8 @@
 var Quote = require("../models/quote");
 
+// Returns a quote as a string based on
+// an author (optional) and count, corresponding
+// to the size of the collection to retrieve from
 getRandomQuote = async function(count, author, message) {
     var random = Math.floor(Math.random() * count);
     var params = (author == undefined) ? undefined : {speaker: author};
@@ -20,8 +23,6 @@ module.exports = {
     name: "rquote",
     description: "Gets a random quote based on name",
     async execute(message, args) {
-
-
         const author = (args.length == 0) ? undefined : args.join(" ");
         const params = (args.length == 0) ? undefined : {speaker: author};
         Quote(message.guild.id).find(params).countDocuments().exec(
