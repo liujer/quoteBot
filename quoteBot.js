@@ -1,13 +1,12 @@
 const fs = require('fs');
 const Discord = require('discord.js');
-const config = require('./config/config.json');
 const async = require('async');
 
 
 
 // Connect to mongoDB
 var mongoose = require('mongoose');
-var mongodb = config.mongoDBkey;
+var mongodb = process.env.mongoDBKey;
 mongoose.connect(mongodb, {useNewUrlParser: true, useUnifiedTopology: true});
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error: '));
@@ -30,7 +29,7 @@ client.once('ready', () => {
 	console.log('Ready!');
 });
 
-client.login(config.discordKey);
+client.login(process.env.discordKey);
 
 client.on('message', message => {
 	if(message.author.bot) {
