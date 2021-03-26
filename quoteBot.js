@@ -4,7 +4,7 @@ const config = require('./config/config.json');
 
 // Connect to mongoDB
 var mongoose = require('mongoose');
-var mongodb = (process.env.mongoDBKey == undefined) ? config.mongoDBkey : process.env.mongoDBKey;
+var mongodb = process.env.mongoDBKey;
 mongoose.connect(mongodb, {useNewUrlParser: true, useUnifiedTopology: true});
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error: '));
@@ -27,7 +27,7 @@ client.once('ready', () => {
 	console.log('Ready!');
 });
 
-const discordKey = (process.env.discordKey == undefined) ? config.discordKey : process.env.discordKey;
+const discordKey = process.env.discordKey;
 client.login(discordKey);
 
 client.on('message', message => {
