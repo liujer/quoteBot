@@ -58,53 +58,40 @@ fetchMessages = (message, options) => {
 */
 processChannel = async (message, limit) => {
     const options = {limit: 100};
-    if (limit === undefined) {
-        await fetchMessages(message, options)
-            .then((args) => {
-                const numProcessed = args['totalCount'];
-                const quoteCount = args['quoteCount'];
-                const stats = getPlural("Processed " + numProcessed + " message", 
-                    numProcessed) + getPlural(" and found " + quoteCount + " quote", quoteCount) + '.';
-                message.channel.send(stats);
-            })
-    } else {
-        let numProcessed = 0;
-        let quotesAdded = 0;
-        let lastID;
-        while (numProcessed < limit) {
-            if (lastID) {
-                options.before = lastID;
-            }
-            if (limit < 100) {
-                options.limit = limit;
-            }
-            const cont = await fetchMessages(message, options)
-                .then(results => { 
-                    const tempProcessed = results['totalCount'];
-                    const tempQuotesAdded = results['quoteCount'];
-                    const tempID = results['lastID'];
-                    numProcessed += tempProcessed;
-                    quotesAdded += tempQuotesAdded;
-                    lastID = tempID;
-                    return (tempProcessed != 100);
-                })
-            if (cont || numProcessed >= limit) {
-                break;
-            }
+    let numProcessed = 0;
+    let quotesAdded = 0;
+    let lastID;
+    while (numProcessed < limit) {
+        if (lastID) {
+            options.before = lastID;
         }
-        const stats = getPlural("Processed " + numProcessed + " message", 
-            numProcessed) + getPlural(" and found " + quotesAdded + " quote", quotesAdded)+ '.';
-        message.channel.send(stats);
+        if (limit < 100) {
+            options.limit = limit;
+        }
+        const cont = await fetchMessages(message, options)
+            .then(results => { 
+                const tempProcessed = results['totalCount'];
+                const tempQuotesAdded = results['quoteCount'];
+                const tempID = results['lastID'];
+                numProcessed += tempProcessed;
+                quotesAdded += tempQuotesAdded;
+                lastID = tempID;
+                return (tempProcessed != 100);
+            })
+        if (cont || numProcessed >= limit) {
+            break;
+        }
     }
-
-
+    const stats = getPlural("Processed " + numProcessed + " message", 
+        numProcessed) + getPlural(" and found " + quotesAdded + " quote", quotesAdded)+ '.';
+    message.channel.send(stats);
 }
 
 // Sends a message to channel asking if user would like to process channel
 // If proceeded, process channel given a limit on amount of messages to process
 continueProcessing = (message, limit) => {
-    const tempLimit = (limit === undefined) ? 100 : limit;
-    message.channel.send(getPlural("Are you sure? This will process " + tempLimit + " message", tempLimit) + '.')
+    const newLimit = (limit === undefined) ? 100 : limit;
+    message.channel.send(getPlural("Are you sure? This will process " + newLimit + " message", newLimit) + '.')
     .then(async function(message) {
         await message.react(yes);
         await message.react(no);
@@ -121,7 +108,7 @@ continueProcessing = (message, limit) => {
         })
         collector.on('end', collected => {
             if (cont) {
-                processChannel(message, limit);
+                processChannel(message, newLimit);
             } else if (authorID !== undefined){
                 message.channel.send(authorID + " chose not to process channel.");
             }
