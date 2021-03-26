@@ -1,8 +1,5 @@
 const fs = require('fs');
 const Discord = require('discord.js');
-const async = require('async');
-
-
 
 // Connect to mongoDB
 var mongoose = require('mongoose');
