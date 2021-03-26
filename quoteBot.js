@@ -1,6 +1,5 @@
 const fs = require('fs');
 const Discord = require('discord.js');
-const config = require('./config/config.json');
 
 // Connect to mongoDB
 var mongoose = require('mongoose');
