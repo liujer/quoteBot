@@ -14,17 +14,17 @@ module.exports = {
 			var speaker = (temp == "") ? "unknown" : temp; // Format author in case excess whitespace
 
 			var time = moment(message.createdAt).format('MMM Do YY, h:mm a');
-			var count = await Quote.find({ 
+			var count = await Quote(message.guild.id).find({ 
 				speaker: speaker, 
 				quote: quote, 
 				dateEntered: time
 			}).countDocuments();
 			if (count == 0) {
-				var quoteModel = new Quote({
+				var quoteModel = Quote(message.guild.id)({
 					speaker: speaker,
 					quote: quote,
-					dateEntered: time
-				}); 
+					dateEntered: time,
+				});
 				quoteModel.save();
 				
 			}
