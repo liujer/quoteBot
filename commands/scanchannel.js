@@ -103,7 +103,8 @@ processChannel = async (message, limit) => {
 // Sends a message to channel asking if user would like to process channel
 // If proceeded, process channel given a limit on amount of messages to process
 continueProcessing = (message, limit) => {
-    message.channel.send(getPlural("Are you sure? This will process " + limit + " message", limit) + '.')
+    const tempLimit = (limit === undefined) ? 100 : limit;
+    message.channel.send(getPlural("Are you sure? This will process " + tempLimit + " message", tempLimit) + '.')
     .then(async function(message) {
         await message.react(yes);
         await message.react(no);
