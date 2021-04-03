@@ -8,8 +8,8 @@
   - **Optional:** `name` - Author of the quote
   - **Usage:** `>>rquote <name>`
 ---
-- **`>>scanchannel`** - Processes messages starting from last message sent in channel to identify quotes. By default, it will scan the last 100 messages.
-  - **Optional:** `count` - Number of messages to scan
+- **`>>scanchannel`** - Processes messages starting from last message sent in channel to identify quotes. 
+  - **Optional:** `count` - Number of messages to scan. If no argument is given, scans last 100 messages
   - **Usage:** `>>scanchannel <count>`
 ### Notes
 - The default prefix for quoteBot is `>>`. 
