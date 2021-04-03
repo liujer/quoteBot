@@ -110,7 +110,7 @@ continueProcessing = (message, limit) => {
             if (cont) {
                 processChannel(message, newLimit);
             } else if (authorID !== undefined){
-                message.channel.send(authorID + " chose not to process channel.");
+                message.channel.send(`${authorID} chose not to process channel.`);
             }
         })
     })

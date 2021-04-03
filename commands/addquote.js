@@ -14,23 +14,25 @@ module.exports = {
 			var speaker = (temp == "") ? "unknown" : temp; // Format author in case excess whitespace
 
 			var time = moment(message.createdAt).format('MMM Do YY, h:mm a');
-			var count = await Quote(message.guild.id).find({ 
-				speaker: speaker, 
-				quote: quote, 
-				dateEntered: time
-			}).countDocuments();
+			var count = await Quote(message.guild.id).find(
+				{ 
+					speaker: speaker, 
+					quote: quote, 
+					dateEntered: time
+				}
+			).countDocuments();
 			if (count == 0) {
-				var quoteModel = Quote(message.guild.id)({
-					speaker: speaker,
-					quote: quote,
-					dateEntered: time,
-				});
+				var quoteModel = Quote(message.guild.id)(
+					{
+						speaker: speaker,
+						quote: quote,
+						dateEntered: time,
+					}
+				);
 				quoteModel.save();
-				
 			}
 			return true;
 		}
 		return false;
-	
 	},
 };
