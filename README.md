@@ -1,6 +1,6 @@
 ## Introduction
-- QuoteBot is a discord bot that stores and retrieves quotes for a server.
-- Entering a quote in the format `"<quote>" - <author>` will passively store a quote.
+- QuoteBot is a discord bot that retrieves and passively stores quotes for a server.
+- Entering a quote in the format `"<quote>" - <author>` in any channel will store a quote.
 
 ## Commands
 ---
