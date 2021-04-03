@@ -7,4 +7,6 @@ var QuoteSchema = new Schema({
     dateEntered: {type: String}
 });
 
-module.exports = mongoose.model('Quote', QuoteSchema, 'quotes');
+module.exports = function(serverID) {
+    return mongoose.model('Quote', QuoteSchema, serverID)
+}
